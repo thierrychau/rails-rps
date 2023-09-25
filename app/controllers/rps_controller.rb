@@ -4,37 +4,28 @@ class RpsController < ApplicationController
   end
 
   RPS = ["rock", "paper", "scissors"]
+  WINNING_RULES = {
+    "rock" => "scissors",
+    "scissors" => "paper",
+    "paper" => "rock"
+  }
 
-  def rps_game(user_rps, computer_rps)
-    if user_rps == computer_rps
-      return "tied"
-    elsif (user_rps == "rock" && computer_rps == "scissors") || (user_rps == "scissors" && computer_rps == "paper") || (user_rps == "paper" && computer_rps == "rock")
-      return "won"
+  def rps_game(player_move, computer_move)
+    if not RPS.include?(player_move)
+      return "The player's move is not acceptable, try again"
+    elsif player_move == computer_move
+      return "We tied"
+    elsif WINNING_RULES.fetch(player_move) == computer_move
+      return "We won"
     else
-      return "lost"
+      return "We lost"
     end
   end
 
-  def rock
-    @user_move = "rock"
-    @computer_rps = RPS.sample
-    @rps_outcome = rps_game(@user_move, @computer_rps)
-
-    render({ :template => "game_templates/play_rps" })
-  end
-
-  def paper
-    @user_move = "paper"
-    @computer_rps = RPS.sample
-    @rps_outcome = rps_game(@user_move, @computer_rps)
-
-    render({ :template => "game_templates/play_rps" })
-  end
-
-  def scissors
-    @user_move = "scissors"
-    @computer_rps = RPS.sample
-    @rps_outcome = rps_game(@user_move, @computer_rps)
+  def move
+    @player_move = params.fetch("move")
+    @computer_move = RPS.sample
+    @rps_outcome = rps_game(@player_move, @computer_move)
 
     render({ :template => "game_templates/play_rps" })
   end
